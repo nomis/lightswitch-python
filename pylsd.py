@@ -68,10 +68,10 @@ def validate(request):
 
 	now = calendar.timegm(datetime.utcnow().timetuple())
 
-	if now - request["ts"] > TIMEOUT:
+	if abs(now - request["ts"]) > TIMEOUT:
 		return None
 
-	requests = list(filter(lambda x: now - x["ts"] <= TIMEOUT, requests))
+	requests = list(filter(lambda x: abs(now - x["ts"]) <= TIMEOUT, requests))
 	requests.append(request)
 
 	return request
