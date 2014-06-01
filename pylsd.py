@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import calendar
+import configparser
 from datetime import datetime
 import hmac
 import json
@@ -9,11 +10,16 @@ import serial
 import socket
 import traceback
 
-SECRET = b"gorKq8oR4oi4ifeIvfjTcZ8_8tPdhACU3ZsrFty4HKd9kwpILuzPB6DAxo9M026o"
 HASHES = ["SHA256"]
 LIGHTS = ["L", "R"]
 TIMEOUT = 10
-DEV = "/dev/serial/by-path/pci-0000:00:02.1-usb-0:4.5:1.0"
+
+config = configparser.ConfigParser()
+config['pylsd'] = {}
+config.read("config", encoding="ASCII")
+
+SECRET = config['pylsd']['secret'].encode("ASCII")
+DEV = config['pylsd']['device']
 
 servers = []
 requests = []

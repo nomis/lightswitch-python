@@ -2,6 +2,7 @@
 
 import argparse
 import calendar
+import configparser
 from datetime import datetime
 import hmac
 import json
@@ -10,8 +11,13 @@ import socket
 import sys
 import uuid
 
-SECRET = b"gorKq8oR4oi4ifeIvfjTcZ8_8tPdhACU3ZsrFty4HKd9kwpILuzPB6DAxo9M026o"
 HASH = "SHA256"
+
+config = configparser.ConfigParser()
+config['pylsd'] = {}
+config.read("config", encoding="ASCII")
+
+SECRET = config['pylsd']['secret'].encode("ASCII")
 
 parser = argparse.ArgumentParser()
 parser.add_argument('node', action="store", metavar="NODE", help="Node to send to")
