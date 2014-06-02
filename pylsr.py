@@ -31,10 +31,10 @@ import uuid
 HASH = "SHA256"
 
 config = configparser.ConfigParser()
-config['pylsd'] = {}
+config['pylsr'] = {}
 config.read("config", encoding="ASCII")
 
-SECRET = config['pylsd']['secret'].encode("ASCII")
+SECRET = config['pylsr']['secret'].encode("ASCII")
 
 parser = argparse.ArgumentParser()
 parser.add_argument('node', action="store", metavar="NODE", help="Node to send to")
