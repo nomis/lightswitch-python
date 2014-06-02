@@ -25,6 +25,7 @@ import json
 import select
 import serial
 import socket
+import syslog
 import traceback
 
 HASHES = ["SHA256"]
@@ -40,6 +41,8 @@ DEV = config['pylsd']['device']
 
 servers = []
 requests = []
+
+syslog.openlog("lightswitch")
 
 for res in socket.getaddrinfo(None, 4094, socket.AF_UNSPEC, socket.SOCK_DGRAM, socket.IPPROTO_UDP, socket.AI_PASSIVE):
 	(family, socktype, proto, canonname, sockaddr) = res
@@ -113,12 +116,16 @@ def process(data, address):
 def switch(light):
 	try:
 		s = serial.Serial(DEV, baudrate=115200, writeTimeout=0)
+		syslog.syslog("toggle " + light)
 		s.write(light.encode("ASCII"))
 		s.close()
 	except:
+		syslog.syslog("device missing")
 		traceback.print_exc()
 
-while True:
+while servers:
 	for s in select.select(servers, [], [])[0]:
 		(data, address) = s.recvfrom(1024)
 		process(data, address)
+
+syslog.closelog()
