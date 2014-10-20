@@ -41,6 +41,7 @@ DEV = config['pylsd']['device']
 
 servers = []
 requests = []
+port = serial.Serial(DEV, baudrate=115200, writeTimeout=0)
 
 syslog.openlog("lightswitch")
 
@@ -114,14 +115,21 @@ def process(data, address):
 
 
 def switch(light):
+	global port
 	try:
-		s = serial.Serial(DEV, baudrate=115200, writeTimeout=0)
+		if port is None:
+			port = serial.Serial(DEV, baudrate=115200, writeTimeout=0)
 		syslog.syslog("toggle " + light)
-		s.write(light.encode("ASCII"))
-		s.close()
+		port.write(light.encode("ASCII"))
 	except:
-		syslog.syslog("device missing")
+		syslog.syslog("device missing/error")
 		traceback.print_exc()
+
+		try:
+			port.close()
+		except:
+			pass
+		port = None
 
 while servers:
 	for s in select.select(servers, [], [])[0]:
