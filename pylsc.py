@@ -139,16 +139,11 @@ try:
 		print(now(), "timeout", timeout)
 
 		if select.select([sys.stdin], [], [], timeout)[0]:
-			ready = True
-
-			while ready:
-				data = os.read(STDIN, 1).decode("ascii", "replace")
-				if data == "":
-					raise SystemExit
-				elif data in lights:
-					pulse(data)
-
-				ready = select.select([sys.stdin], [], [], 0)[0]
+			data = os.read(STDIN, 1).decode("ascii", "replace")
+			if data == "":
+				raise SystemExit
+			elif data in lights:
+				pulse(data)
 finally:
 	reset()
 
