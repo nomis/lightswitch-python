@@ -139,7 +139,7 @@ try:
 		print(now(), "timeout", timeout)
 
 		if select.select([sys.stdin], [], [], timeout)[0]:
-			data = os.read(STDIN, 1).decode("ascii", "replace")
+			data = os.read(STDIN, 1).decode("ASCII", "replace")
 			if data == "":
 				raise SystemExit
 			elif data in lights:

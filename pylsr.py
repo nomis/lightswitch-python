@@ -31,14 +31,14 @@ import uuid
 HASH = "SHA256"
 
 config = configparser.ConfigParser()
-config['pylsr'] = {}
+config["pylsr"] = {}
 config.read("config", encoding="ASCII")
 
-SECRET = config['pylsr']['secret'].encode("ASCII")
+SECRET = config["pylsr"]["secret"].encode("ASCII")
 
 parser = argparse.ArgumentParser()
-parser.add_argument('node', action="store", metavar="NODE", help="Node to send to")
-parser.add_argument('light', action="store", metavar="LIGHT", choices=["L", "R"], help="Light to switch")
+parser.add_argument("node", action="store", metavar="NODE", help="Node to send to")
+parser.add_argument("light", action="store", metavar="LIGHT", choices=["L", "R"], help="Light to switch")
 args = parser.parse_args()
 
 request = json.dumps({

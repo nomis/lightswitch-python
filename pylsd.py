@@ -33,10 +33,10 @@ LIGHTS = ["L", "R"]
 TIMEOUT = 10
 
 config = configparser.ConfigParser()
-config['pylsd'] = {}
+config["pylsd"] = {}
 config.read("config", encoding="ASCII")
 
-SECRET = config['pylsd']['secret'].encode("ASCII")
+SECRET = config["pylsd"]["secret"].encode("ASCII")
 
 servers = []
 requests = []
