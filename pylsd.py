@@ -23,8 +23,8 @@ from datetime import datetime
 import hmac
 import json
 import select
-import serial
 import socket
+import subprocess
 import syslog
 import traceback
 
@@ -37,11 +37,10 @@ config['pylsd'] = {}
 config.read("config", encoding="ASCII")
 
 SECRET = config['pylsd']['secret'].encode("ASCII")
-DEV = config['pylsd']['device']
 
 servers = []
 requests = []
-port = serial.Serial(DEV, baudrate=115200, writeTimeout=0)
+
 
 syslog.openlog("lightswitch")
 
@@ -54,6 +53,11 @@ for res in socket.getaddrinfo(None, 4094, socket.AF_UNSPEC, socket.SOCK_DGRAM, s
 	s.setblocking(False)
 	s.bind(sockaddr)
 	servers.append(s)
+
+
+def run_controller():
+	global proc
+	proc = subprocess.Popen(["./pylsc.py"], bufsize=0, stdin=subprocess.PIPE)
 
 
 def authorise(data):
@@ -115,21 +119,28 @@ def process(data, address):
 
 
 def switch(light):
-	global port
+	global proc
 	try:
-		if port is None:
-			port = serial.Serial(DEV, baudrate=115200, writeTimeout=0)
+		if proc is None:
+			run_controller()
 		syslog.syslog("toggle " + light)
-		port.write(light.encode("ASCII"))
+		proc.stdin.write(light.encode("ASCII"))
 	except:
-		syslog.syslog("device missing/error")
+		syslog.syslog("process error")
 		traceback.print_exc()
 
 		try:
-			port.close()
+			proc.stdin.close()
 		except:
 			pass
-		port = None
+		try:
+			proc.terminate()
+		except:
+			pass
+		proc = None
+
+
+run_controller()
 
 while servers:
 	for s in select.select(servers, [], [])[0]:
