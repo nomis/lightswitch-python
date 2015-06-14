@@ -2,7 +2,7 @@
 
 #  pylsd - Python Lightswitch Daemon
 #
-#  Copyright ©2014  Simon Arlott
+#  Copyright ©2014-2015  Simon Arlott
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import configparser
 from datetime import datetime
 import hmac
 import json
+import os
 import select
 import socket
 import subprocess
@@ -44,6 +45,14 @@ requests = []
 
 syslog.openlog("lightswitch")
 
+try:
+	os.unlink("direct")
+except FileNotFoundError:
+	pass
+direct = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM, 0)
+direct.bind("direct")
+servers.append(direct)
+
 for res in socket.getaddrinfo(None, 4094, socket.AF_UNSPEC, socket.SOCK_DGRAM, socket.IPPROTO_UDP, socket.AI_PASSIVE):
 	(family, socktype, proto, canonname, sockaddr) = res
 	s = socket.socket(family, socktype, proto)
@@ -62,7 +71,7 @@ def run_controller():
 
 def authorise(data):
 	try:
-		message = json.loads(data.decode("UTF-8"))
+		message = json.loads(data.decode("UTF-8", "replace"))
 	except ValueError:
 		return None
 
@@ -109,7 +118,10 @@ def validate(request):
 
 
 def process(data, address):
-	request = validate(authorise(data))
+	if address is None:
+		request = {"light": data.decode("UTF-8", "replace")}
+	else:
+		request = validate(authorise(data))
 
 	if not request:
 		return
