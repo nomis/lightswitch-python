@@ -30,7 +30,7 @@ import syslog
 import traceback
 
 HASHES = ["SHA256"]
-LIGHTS = ["L", "R"]
+LIGHTS = ["L", "C", "R"]
 TIMEOUT = 10
 
 config = configparser.ConfigParser()

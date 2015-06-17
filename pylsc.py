@@ -36,7 +36,7 @@ LED_OFF = b"0"
 GPIO_ON = b"1"
 GPIO_OFF = b"0"
 
-lights = dict([(x,{}) for x in ["L", "R"]])
+lights = dict([(x,{}) for x in ["L", "C", "R"]])
 
 
 def log_exc():

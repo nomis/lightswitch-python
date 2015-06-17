@@ -2,7 +2,7 @@
 
 #  pylsd - Python Lightswitch Request
 #
-#  Copyright ©2014  Simon Arlott
+#  Copyright ©2014-2015  Simon Arlott
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ SECRET = config["pylsr"]["secret"].encode("ASCII")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("node", action="store", metavar="NODE", help="Node to send to")
-parser.add_argument("light", action="store", metavar="LIGHT", choices=["L", "R"], help="Light to switch")
+parser.add_argument("light", action="store", metavar="LIGHT", choices=["L", "C", "R"], help="Light to switch")
 args = parser.parse_args()
 
 request = json.dumps({
