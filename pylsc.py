@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#  pylsd - Python Lightswitch Controller
+#  pylsc - Python Lightswitch Controller
 #
 #  Copyright ©2015  Simon Arlott
 #
@@ -28,7 +28,7 @@ from time import monotonic as now
 
 MAX_QUEUED_PULSES = 10
 PULSE_ON_TIME = 0.2
-PULSE_OFF_TIME = 0.3
+PULSE_OFF_TIME = 0.8
 (IDLE, PULSE_ON, PULSE_OFF) = range(0, 3)
 
 LED_ON = b"255"
